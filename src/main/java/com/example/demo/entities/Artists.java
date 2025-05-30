@@ -45,7 +45,7 @@ public class Artists implements Serializable {
     private java.util.Date modifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "usersId", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users usersId; //done
 
     @OneToMany(mappedBy = "artistId")

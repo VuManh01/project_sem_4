@@ -22,7 +22,7 @@ public class FavouriteAlbums implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "usersId", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users userId; //done
 
     @ManyToOne

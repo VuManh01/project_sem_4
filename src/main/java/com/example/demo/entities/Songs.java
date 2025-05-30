@@ -74,8 +74,26 @@ public class Songs implements Serializable {
     @OneToMany(mappedBy = "songId")
     private Collection<ViewInMonth> likeAndViewInMonthCollection; //done
 
-    public Songs(Integer id, String title, String audioPath, Integer listenAmount, String featureArtist, String lyricFilePath, Boolean isPending, Boolean isDeleted, Date createdAt, Date modifiedAt, Albums albumId, Artists artistId, Collection<FavouriteSongs> favouriteSongsCollection, Collection<PlaylistSong> playlistSongCollection, Collection<GenreSong> genreSongCollection, Collection<ViewInMonth> likeAndViewInMonthCollection) {
-        this.id = id;
+//    public Songs(Integer id, String title, String audioPath, Integer listenAmount, String featureArtist, String lyricFilePath, Boolean isPending, Boolean isDeleted, Date createdAt, Date modifiedAt, Albums albumId, Artists artistId, Collection<FavouriteSongs> favouriteSongsCollection, Collection<PlaylistSong> playlistSongCollection, Collection<GenreSong> genreSongCollection, Collection<ViewInMonth> likeAndViewInMonthCollection) {
+//        this.id = id;
+//        this.title = title;
+//        this.audioPath = audioPath;
+//        this.listenAmount = listenAmount;
+//        this.featureArtist = featureArtist;
+//        this.lyricFilePath = lyricFilePath;
+//        this.isPending = isPending;
+//        this.isDeleted = isDeleted;
+//        this.createdAt = createdAt;
+//        this.modifiedAt = modifiedAt;
+//        this.albumId = albumId;
+//        this.artistId = artistId;
+//        this.favouriteSongsCollection = favouriteSongsCollection;
+//        this.playlistSongCollection = playlistSongCollection;
+//        this.genreSongCollection = genreSongCollection;
+//        this.likeAndViewInMonthCollection = likeAndViewInMonthCollection;
+//    }
+
+    public Songs(String title, String audioPath, Integer listenAmount, String featureArtist, String lyricFilePath, Boolean isPending, Boolean isDeleted, Date createdAt, Date modifiedAt, Artists artistId) {
         this.title = title;
         this.audioPath = audioPath;
         this.listenAmount = listenAmount;
@@ -85,11 +103,6 @@ public class Songs implements Serializable {
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
-        this.albumId = albumId;
         this.artistId = artistId;
-        this.favouriteSongsCollection = favouriteSongsCollection;
-        this.playlistSongCollection = playlistSongCollection;
-        this.genreSongCollection = genreSongCollection;
-        this.likeAndViewInMonthCollection = likeAndViewInMonthCollection;
     }
 }

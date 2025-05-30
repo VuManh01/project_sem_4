@@ -45,7 +45,7 @@ public class AuthenticationService {
         //tạo danh sách lỗi
         List<Map<String, String>> errors = new ArrayList<>();
 
-        //tạo 1 đối tượng newUser
+        // TẠO ĐỐI TƯỢNG USERS MỚI (ENTITY)
         Users newUser = new Users();
 
         //Optional: Nếu có thì trả về Object Users ko thi trả về Object rỗng
@@ -89,7 +89,7 @@ public class AuthenticationService {
             throw new ValidationException(errors);
         }
 
-        //gán giá trị vào newUser
+        // CHUYỂN DỮ LIỆU TỪ DTO (NEWORUPDATEUSER) SANG ENTITY (USERS)
         newUser.setUsername(request.getUsername());
         newUser.setPassword(encoder.encode(request.getPassword()));
         newUser.setFullname(request.getFullName());
@@ -102,7 +102,9 @@ public class AuthenticationService {
         newUser.setCreatedAt(new Date());
         newUser.setModifiedAt(new Date());
 
+        // LƯU ENTITY VÀO DATABASE
         userRepository.save(newUser);
+
         return toUserResponse(newUser);
 
 
@@ -192,6 +194,7 @@ public class AuthenticationService {
         return null;
     }
 
+    // CHUYỂN DỮ LIỆU TỪ ENTITY (USERS) SANG DTO (USERFORLOGIN)
     public UserForLogin toUserForLogin(Users users) {
         UserForLogin res = new UserForLogin();
         BeanUtils.copyProperties(users, res);

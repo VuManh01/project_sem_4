@@ -28,9 +28,10 @@ public class GenreSong implements Serializable {
     @ManyToOne
     private Songs songId; //done
 
-    public GenreSong(Integer id, Genres genreId, Songs songId) {
-        this.id = id;
+    public GenreSong( Genres genreId, Songs songId) {
         this.genreId = genreId;
         this.songId = songId;
     }
+
+
 }

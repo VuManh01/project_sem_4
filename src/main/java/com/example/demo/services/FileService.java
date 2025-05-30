@@ -28,4 +28,12 @@ public class FileService {
             // Log lỗi nhưng không throw để tránh che dấu lỗi chính
         }
     }
+
+    public void deleteLRCFile(String fileName) {
+        try{
+            Files.deleteIfExists(Paths.get(FOLDER + "lrc/" + fileName));
+        } catch (IOException ex) {
+            // Log lỗi nhưng không throw để tránh che dấu lỗi chính
+        }
+    }
 }
