@@ -17,4 +17,6 @@ public interface SongRepository extends JpaRepository<Songs, Integer> {
     Optional<Songs> findByTitle(String title);
 
     Optional<Songs> findByIdAndIsDeleted(Integer id, boolean isDeleted);
+
+
 }

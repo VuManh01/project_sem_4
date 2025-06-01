@@ -30,7 +30,7 @@ import java.util.Date;
 
     @Basic(optional = false)
     @Column(name = "full_name")
-    private String fullname;
+    private String fullName;
 
     @Basic(optional = false)
     @Column(name = "avatar")
@@ -82,7 +82,7 @@ import java.util.Date;
     public Users(int id, String userName, String fullName, String avatar, String passWord, String phone, String email, String role, Date dob, boolean isDeleted, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.username = userName;
-        this.fullname = fullName;
+        this.fullName = fullName;
         this.avatar = avatar;
         this.password = passWord;
         this.phone = phone;

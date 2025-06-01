@@ -92,7 +92,7 @@ public class AuthenticationService {
         // CHUYỂN DỮ LIỆU TỪ DTO (NEWORUPDATEUSER) SANG ENTITY (USERS)
         newUser.setUsername(request.getUsername());
         newUser.setPassword(encoder.encode(request.getPassword()));
-        newUser.setFullname(request.getFullName());
+        newUser.setFullName(request.getFullName());
         newUser.setAvatar(request.getAvatar());
         newUser.setPhone(request.getPhone());
         newUser.setEmail(request.getEmail());
@@ -161,7 +161,7 @@ public class AuthenticationService {
             }
             newUser.setUsername(request.getUsername());
             newUser.setPassword(encoder.encode(request.getPassword()));
-            newUser.setFullname(request.getFullName());
+            newUser.setFullName(request.getFullName());
             newUser.setAvatar(request.getAvatar());
             newUser.setPhone(request.getPhone());
             newUser.setEmail(request.getEmail());
@@ -214,7 +214,7 @@ public class AuthenticationService {
                 throw new ValidationException(Collections.singletonList(Map.of("permissionError", "You don't have permission")));
             }
 
-            return new AdminOrArtistLoginResponse(jwtService.generateTokenForAdminOrArtist(users.getId().toString(), users.getUsername(), users.getFullname(), users.getRole()));
+            return new AdminOrArtistLoginResponse(jwtService.generateTokenForAdminOrArtist(users.getId().toString(), users.getUsername(), users.getFullName(), users.getRole()));
         }
         return null;
     }
