@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,14 +48,12 @@ public class Genres implements Serializable {
     @ManyToOne
     private Colors colorId; //done
 
-    public Genres(Integer id, String title, String image, Boolean isDeleted, Date createdAt, Date modifiedAt, Collection<GenreSong> genreSongCollection, Colors colorId) {
-        this.id = id;
+    public Genres(String title, String image, Boolean isDeleted, Colors colorId, Date createdAt, Date modifiedAt) {
         this.title = title;
         this.image = image;
         this.isDeleted = isDeleted;
+        this.colorId = colorId;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
-        this.genreSongCollection = genreSongCollection;
-        this.colorId = colorId;
     }
 }

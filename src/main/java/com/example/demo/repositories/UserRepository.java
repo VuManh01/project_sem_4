@@ -30,4 +30,7 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
 
     @Query("SELECT a FROM Users a WHERE a.username LiKE %:searchTxt% AND a.isDeleted = :isDeleted")
     List<Users> searchNotDeletedPaging(@Param("searchTxt") String searchTxt, boolean isDeleted, Pageable pageable);
+
+    @Query("Select COUNT(a) from Users a where a.isDeleted = :isDeleted")
+    int getNumberOfAllNotDeleted(@Param("isDeleted") boolean isDeleted);
 }

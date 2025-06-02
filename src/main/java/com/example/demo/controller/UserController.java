@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.NewOrUpdateUser;
+import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.UserResponse;
 import com.example.demo.dto.response.display_for_admin.UserDisplayForAdmin;
 import com.example.demo.ex.ValidationException;
@@ -83,5 +84,21 @@ public class UserController {
     public ResponseEntity<List<UserDisplayForAdmin>> getSearchedSongsDisplayForAdmin
             (@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "searchTxt", defaultValue = "") String searchTxt) {
         return new ResponseEntity<>(userService.getSearchUserDisplayForAdmin(searchTxt, page), HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/users/change/avatar")
+    public ResponseEntity<Object> changeAvatar(@RequestBody @Valid UpdateFileModel request) {
+        userService.updateUserAvatar(request);
+        return new ResponseEntity<>(
+                Map.of(
+                        "message", "changes successfully"
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/admin/users/count")
+    public ResponseEntity<Object> getQuantity() {
+        return new ResponseEntity<>(Map.of("qty", userService.getNumberOfUser()), HttpStatus.OK);
     }
 }

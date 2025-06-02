@@ -3,21 +3,24 @@ package com.example.demo.services;
 import com.example.demo.dto.request.NewOrUpdateGenreSong;
 import com.example.demo.dto.request.NewOrUpdateSong;
 import com.example.demo.dto.response.common_response.SongResponse;
+import com.example.demo.dto.response.display_for_admin.SongDisplayForAdmin;
+import com.example.demo.dto.response.mix_response.SongWithViewInMonth;
 import com.example.demo.entities.Albums;
 import com.example.demo.entities.Artists;
 import com.example.demo.entities.Songs;
+import com.example.demo.entities.ViewInMonth;
 import com.example.demo.ex.NotFoundException;
 import com.example.demo.ex.ValidationException;
-import com.example.demo.repositories.AlbumRepository;
-import com.example.demo.repositories.ArtistRepository;
-import com.example.demo.repositories.GenreSongRepository;
-import com.example.demo.repositories.SongRepository;
+import com.example.demo.repositories.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,12 @@ public class SongService {
 
     @Autowired
     private AlbumRepository albumRepository;
+
+    @Autowired
+    private FavouriteSongRepository favouriteSongRepository;
+
+    @Autowired
+    private ViewInMonthRepository likeAndViewRepository;
 
     public List<SongResponse> getAllSongs(){
         return songRepository.findAllNotDeleted(false)
@@ -163,6 +172,57 @@ public class SongService {
 
         genreSongService.updateGenresForSong(request.getId(), request.getGenreIds());
         return request;
+    }
+
+    public List<SongDisplayForAdmin> getAllSongsForAdmin(int page){
+        Pageable pageable = PageRequest.of(page, 10);
+
+        return songRepository.findAllNotDeletedPaging(false, pageable)
+                .stream()
+                .map(this::toSongDisplayAdmin)
+                .collect(Collectors.toList());
+    }
+
+    public SongDisplayForAdmin toSongDisplayAdmin(Songs song) {
+        SongDisplayForAdmin res = new SongDisplayForAdmin();
+        int favCount = favouriteSongRepository.findFSBySongId(song.getId(), false).size();
+        res.setTotalFavourite(favCount);
+
+        BeanUtils.copyProperties(song, res);
+        res.setIsDeleted(song.getIsDeleted());
+        res.setIsPending(song.getIsPending());
+        if (song.getAlbumId() != null) {
+            res.setAlbumTitle(song.getAlbumId().getTitle());
+            res.setAlbumImage(song.getAlbumId().getImage());
+        }
+        res.setArtistName(song.getArtistId().getArtistName());
+        List<String> genreNames = genreSongRepository.findBySongId(song.getId(), false)
+                .stream()
+                .map(it -> it.getGenreId().getTitle())
+                .toList();
+        res.setGenreNames(genreNames);
+        return res;
+    }
+
+    public SongWithViewInMonth getMostListenedSongInMonth() {
+        LocalDate cuDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(0, 1);
+        ViewInMonth mostListenedSong = likeAndViewRepository.findSongsWithMaxListenAmount(cuDate.getMonthValue(), pageable)
+                .stream().findFirst().orElseThrow(() -> new NotFoundException("Can't find most listened song"));
+        return toSongWithLikeAndViewAmount(mostListenedSong);
+    }
+    private SongWithViewInMonth toSongWithLikeAndViewAmount(ViewInMonth mostListenedSong) {
+        SongWithViewInMonth res = new SongWithViewInMonth();
+        res.setSongId(mostListenedSong.getSongId().getId());
+        res.setSongName(mostListenedSong.getSongId().getTitle());
+        res.setArtistName(mostListenedSong.getSongId().getArtistId().getArtistName());
+        res.setAlbumName(mostListenedSong.getSongId().getAlbumId().getTitle());
+        res.setListenInMonth(mostListenedSong.getListenAmount());
+        return res;
+    }
+
+    public int getNumberOfSong() {
+        return songRepository.getNumberOfAllNotDeleted(false);
     }
 
 }

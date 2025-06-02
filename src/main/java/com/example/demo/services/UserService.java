@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.request.NewOrUpdateUser;
+import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.UserResponse;
 import com.example.demo.dto.response.display_for_admin.UserDisplayForAdmin;
 import com.example.demo.entities.Users;
@@ -166,4 +167,25 @@ public class UserService {
                 .map(this::toUserDisplayForAdmin)
                 .collect(Collectors.toList());
     }
+
+    public void updateUserAvatar(UpdateFileModel request) {
+        Optional<Users> op = userRepository.findByIdAndIsDeleted(request.getId(), false);
+        //check sự tồn tại
+        if (op.isEmpty()) {
+            fileService.deleteImageFile(request.getFileName());
+            throw new NotFoundException("Can't find any user with id: " + request.getId());
+        }
+        Users user = op.get();
+        fileService.deleteAudioFile(user.getAvatar());
+        user.setAvatar(request.getFileName());
+
+        user.setModifiedAt(new Date());
+        userRepository.save(user);
+
+    }
+
+    public int getNumberOfUser() {
+        return userRepository.getNumberOfAllNotDeleted(false);
+    }
+
 }
