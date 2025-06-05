@@ -89,5 +89,12 @@ public class SongController {
         return new ResponseEntity<>(Map.of("qty", songService.getNumberOfSong()), HttpStatus.OK);
     }
 
+    @GetMapping("/public/songs/topFive")
+    public ResponseEntity<Object> findTop5SongInMonth() {
+        List<SongWithViewInMonth> songs = songService.getMost5ListenedSongInMonth();
+        return new ResponseEntity<>(songs, HttpStatus.OK);
+    }
+
+
 
 }

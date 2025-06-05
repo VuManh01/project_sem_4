@@ -30,10 +30,22 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        
+        // Log cho 2 endpoint cụ thể
+//        String requestURI = request.getRequestURI();
+//        if (requestURI.equals("/api/public/songs/mostListened") || requestURI.equals("/api/public/users")) {
+//            System.out.println("\n=== Debug Token for " + requestURI + " ===");
+//            System.out.println("Authorization Header: " + authHeader);
+//        }
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtService.extractUserName(token);
+            
+//            if (requestURI.equals("/api/public/songs/mostListened") || requestURI.equals("/api/public/users")) {
+//                System.out.println("Token: " + token);
+//                System.out.println("Username from token: " + username);
+//            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -43,6 +55,11 @@ public class JwtFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                
+//                if (requestURI.equals("/api/public/songs/mostListened") || requestURI.equals("/api/public/users")) {
+//                    System.out.println("Authentication successful for: " + username);
+//                    System.out.println("User authorities: " + userDetails.getAuthorities());
+//                }
             }
         }
 

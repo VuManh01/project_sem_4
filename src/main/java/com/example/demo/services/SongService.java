@@ -225,4 +225,13 @@ public class SongService {
         return songRepository.getNumberOfAllNotDeleted(false);
     }
 
+    public List<SongWithViewInMonth> getMost5ListenedSongInMonth() {
+        LocalDate cuDate = LocalDate.now();
+
+        Pageable pageable = PageRequest.of(0, 5);
+        List<ViewInMonth> mostListenedSongs = likeAndViewRepository.findSongsWithMaxListenAmount(cuDate.getMonthValue(), pageable);
+        return mostListenedSongs.stream()
+                .map(this::toSongWithLikeAndViewAmount)
+                .collect(Collectors.toList());
+    }
 }
