@@ -54,8 +54,7 @@ public class Artists implements Serializable {
     @OneToMany(mappedBy = "artistId")
     private Collection<Albums> albumsId; //done
 
-    public Artists(Integer id, String artistName, String image, String bio, Boolean isDeleted, Date createdAt, Date modifiedAt) {
-        this.id = id;
+    public Artists(String artistName, String image, String bio, Boolean isDeleted, Date createdAt, Date modifiedAt) {
         this.artistName = artistName;
         this.image = image;
         this.bio = bio;

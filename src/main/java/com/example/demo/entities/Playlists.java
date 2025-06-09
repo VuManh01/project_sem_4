@@ -47,11 +47,14 @@ public class Playlists implements Serializable {
     @OneToMany(mappedBy = "playlistId")
     private Collection<PlaylistSong> playlistSongCollection; //done
 
-    public Playlists(Integer id, String title, Boolean isDeleted, Date createdAt, Date modifiedAt) {
-        this.id = id;
+    public Playlists(String title, Boolean isDeleted, Date createdAt, Date modifiedAt, Users userId) {
         this.title = title;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.userId = userId;
     }
+
+
+
 }

@@ -78,4 +78,15 @@ public class FileController {
                 .body(fileContent);
 
     }
+
+    @PostMapping("/upload/lrc")
+    public ResponseEntity<String> uploadLRCFile(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(fileService.uploadLRCFile(file));
+    }
+
+    @PostMapping("/upload/audio")
+    public ResponseEntity<String> uploadAudioFile(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(fileService.uploadAudioFile(file));
+    }
+
 }

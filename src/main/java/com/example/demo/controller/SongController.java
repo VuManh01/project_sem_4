@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.NewOrUpdateSong;
+import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.SongResponse;
 import com.example.demo.dto.response.display_for_admin.SongDisplayForAdmin;
 import com.example.demo.dto.response.mix_response.SongWithViewInMonth;
@@ -95,6 +96,84 @@ public class SongController {
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
+    @GetMapping("/admin/songs/byUser/display/{id}")
+    public ResponseEntity<List<SongDisplayForAdmin>> findAllSongsByUserIdForDisplayForAdmin
+            (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        return new ResponseEntity<>(songService.getAllFavSongsByUserIdForAdmin(id, page), HttpStatus.OK);
+    }
 
+    @GetMapping("/admin/songs/display/{id}")
+    public ResponseEntity<Object> findDisplayDetailsForAdmin(@PathVariable("id") int id) {
+        SongDisplayForAdmin song = songService.findDisplayForAdminById(id);
+        return new ResponseEntity<>(song, HttpStatus.OK);
+    }
 
+    @PutMapping("/admin/songs/toggle/pending/{id}")
+    public ResponseEntity<Object> toggleSongPending(@PathVariable("id") int id) {
+        songService.toggleSongPendingStatus(id);
+        return new ResponseEntity<>(
+                Map.of(
+                        "message", "changes successfully"
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/admin/songs/change/rlc")
+    public ResponseEntity<Object> changeRLC(@RequestBody @Valid UpdateFileModel request) {
+        songService.updateSongRLC(request);
+        return new ResponseEntity<>(
+                Map.of(
+                        "message", "changes successfully"
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/admin/songs/change/audio")
+    public ResponseEntity<Object> changeAudio(@RequestBody @Valid UpdateFileModel request) {
+        songService.updateSongAudio(request);
+        return new ResponseEntity<>(
+                Map.of(
+                        "message", "changes successfully"
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/public/songs/{id}")
+    public ResponseEntity<Object> findDetails(@PathVariable("id") int id) {
+        SongResponse song = songService.findById(id);
+        return new ResponseEntity<>(song, HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("/public/songs/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id") int id) {
+        songService.deleteById(id);
+        return new ResponseEntity<>(
+                Map.of(
+                        "message", "Deleted successfully"
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/admin/songs/byPlaylist/display/{id}")
+    public ResponseEntity<List<SongDisplayForAdmin>> findAllSongsByPlaylistIdForDisplayForAdmin
+            (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        return new ResponseEntity<>(songService.getAllSongsByPlaylistIdForAdmin(id, page), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/songs/byAlbum/display/{id}")
+    public ResponseEntity<List<SongDisplayForAdmin>> findAllSongsByAlbumIdForDisplayForAdmin
+            (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        return new ResponseEntity<>(songService.getAllSongsByAlbumIdForAdmin(id, page), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/songs/byArtist/display/{id}")
+    public ResponseEntity<List<SongDisplayForAdmin>> findAllSongsByArtistIdForDisplayForAdmin
+            (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        return new ResponseEntity<>(songService.getAllSongsByArtistIdForAdmin(id, page), HttpStatus.OK);
+    }
 }

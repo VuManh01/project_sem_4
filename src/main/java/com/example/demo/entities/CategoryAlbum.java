@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
+
 public class CategoryAlbum implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,4 +29,9 @@ public class CategoryAlbum implements Serializable {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne
     private Categories categoryId;
+
+    public CategoryAlbum(Albums albumId, Categories categoryId) {
+        this.albumId = albumId;
+        this.categoryId = categoryId;
+    }
 }

@@ -2,13 +2,11 @@ package com.example.demo.services;
 
 import com.example.demo.dto.request.NewOrUpdateGenreSong;
 import com.example.demo.dto.request.NewOrUpdateSong;
+import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.SongResponse;
 import com.example.demo.dto.response.display_for_admin.SongDisplayForAdmin;
 import com.example.demo.dto.response.mix_response.SongWithViewInMonth;
-import com.example.demo.entities.Albums;
-import com.example.demo.entities.Artists;
-import com.example.demo.entities.Songs;
-import com.example.demo.entities.ViewInMonth;
+import com.example.demo.entities.*;
 import com.example.demo.ex.NotFoundException;
 import com.example.demo.ex.ValidationException;
 import com.example.demo.repositories.*;
@@ -50,6 +48,9 @@ public class SongService {
 
     @Autowired
     private ViewInMonthRepository likeAndViewRepository;
+
+    @Autowired
+    private PlaylistSongRepository playlistSongRepository;
 
     public List<SongResponse> getAllSongs(){
         return songRepository.findAllNotDeleted(false)
@@ -234,4 +235,154 @@ public class SongService {
                 .map(this::toSongWithLikeAndViewAmount)
                 .collect(Collectors.toList());
     }
+
+    public List<SongDisplayForAdmin> getAllFavSongsByUserIdForAdmin(Integer id, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+
+        return favouriteSongRepository.findFSByUserIdPaging(id, false, pageable)
+                .stream()
+                .map(this::toSongDisplayAdmin)
+                .collect(Collectors.toList());
+    }
+
+    public SongDisplayForAdmin toSongDisplayAdmin(FavouriteSongs fsSong) {
+        Songs song = songRepository.findByIdAndIsDeleted(fsSong.getSongId().getId(), false).get();
+        SongDisplayForAdmin res = new SongDisplayForAdmin();
+
+        int favCount = favouriteSongRepository.findFSBySongId(song.getId(), false).size();
+        res.setTotalFavourite(favCount);
+
+        BeanUtils.copyProperties(song, res);
+        res.setIsDeleted(song.getIsDeleted());
+        res.setIsPending(song.getIsPending());
+        if (song.getAlbumId() != null) {
+            res.setAlbumTitle(song.getAlbumId().getTitle());
+            res.setAlbumImage(song.getAlbumId().getImage());
+        }
+        res.setArtistName(song.getArtistId().getArtistName());
+        List<String> genreNames = genreSongRepository.findBySongId(song.getId(), false)
+                .stream()
+                .map(it -> it.getGenreId().getTitle())
+                .toList();
+        res.setGenreNames(genreNames);
+        return res;
+    }
+
+    public SongDisplayForAdmin findDisplayForAdminById(int id) {
+        Optional<Songs> op = songRepository.findByIdAndIsDeleted(id, false);
+        if (op.isEmpty()) {
+            throw new NotFoundException("Can't find any song with id: " + id);
+        }
+        return toSongDisplayAdmin(op.get());
+    }
+
+    public void toggleSongPendingStatus(int id) {
+        Optional<Songs> op = songRepository.findByIdAndIsDeleted(id, false);
+        if (op.isEmpty()) {
+            throw new NotFoundException("Can't find any song with id: " + id);
+        }
+        Songs song = op.get();
+        song.setIsPending(!song.getIsPending());
+        song.setModifiedAt(new Date());
+        songRepository.save(song);
+    }
+
+    public void updateSongRLC(UpdateFileModel request) {
+        Optional<Songs> op = songRepository.findByIdAndIsDeleted(request.getId(), false);
+        //check sự tồn tại
+        if (op.isEmpty()) {
+            fileService.deleteLRCFile(request.getFileName());
+            throw new NotFoundException("Can't find any song with id: " + request.getId());
+        }
+        Songs song = op.get();
+        fileService.deleteLRCFile(song.getLyricFilePath());
+        song.setLyricFilePath(request.getFileName());
+
+        song.setModifiedAt(new Date());
+        songRepository.save(song);
+
+    }
+
+    public void updateSongAudio(UpdateFileModel request) {
+        Optional<Songs> op = songRepository.findByIdAndIsDeleted(request.getId(), false);
+        //check sự tồn tại
+        if (op.isEmpty()) {
+            fileService.deleteAudioFile(request.getFileName());
+            throw new NotFoundException("Can't find any song with id: " + request.getId());
+        }
+        Songs song = op.get();
+        fileService.deleteAudioFile(song.getAudioPath());
+        song.setAudioPath(request.getFileName());
+
+        song.setModifiedAt(new Date());
+        songRepository.save(song);
+    }
+
+    // method get information song to edit information this song
+    public SongResponse findById(int id) {
+        Optional<Songs> op = songRepository.findByIdAndIsDeleted(id, false);
+        if (op.isEmpty()) {
+            throw new NotFoundException("Can't find any song with id: " + id);
+        }
+        return toSongResponse(op.get());
+    }
+
+    public boolean deleteById(int id) {
+        Optional<Songs> op = songRepository.findById(id);
+        if (op.isEmpty()) {
+            throw new NotFoundException("Can't find any song with id: " + id);
+        }
+        Songs existing = op.get();
+        existing.setIsDeleted(true);
+        songRepository.save(existing);
+        return true;
+    }
+
+    public List<SongDisplayForAdmin> getAllSongsByPlaylistIdForAdmin(Integer id, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+
+        return playlistSongRepository.findByPlaylistIdPaging(id, false, pageable)
+                .stream()
+                .map(this::toSongDisplayAdmin)
+                .collect(Collectors.toList());
+    }
+    public SongDisplayForAdmin toSongDisplayAdmin(PlaylistSong playlistSong) {
+        Songs song = songRepository.findByIdAndIsDeleted(playlistSong.getSongId().getId(), false).get();
+
+        SongDisplayForAdmin res = new SongDisplayForAdmin();
+        int favCount = favouriteSongRepository.findFSBySongId(song.getId(), false).size();
+        res.setTotalFavourite(favCount);
+        BeanUtils.copyProperties(song, res);
+        res.setIsDeleted(song.getIsDeleted());
+        res.setIsPending(song.getIsPending());
+        if (song.getAlbumId() != null) {
+            res.setAlbumTitle(song.getAlbumId().getTitle());
+            res.setAlbumImage(song.getAlbumId().getImage());
+        }
+        res.setArtistName(song.getArtistId().getArtistName());
+        List<String> genreNames = genreSongRepository.findBySongId(song.getId(), false)
+                .stream()
+                .map(it -> it.getGenreId().getTitle())
+                .toList();
+        res.setGenreNames(genreNames);
+        return res;
+    }
+
+    public List<SongDisplayForAdmin> getAllSongsByAlbumIdForAdmin(int albumId, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return songRepository.findAllByAlbumIdPaging(albumId, false, pageable)
+                .stream()
+                .map(this::toSongDisplayAdmin)
+                .collect(Collectors.toList());
+    }
+
+    public List<SongDisplayForAdmin> getAllSongsByArtistIdForAdmin(int artistId, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return songRepository.findAllByArtistIdForAdmin(artistId, false, pageable)
+                .stream()
+                .map(this::toSongDisplayAdmin)
+                .collect(Collectors.toList());
+    }
+
+
 }

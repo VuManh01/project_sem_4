@@ -61,7 +61,14 @@ public class Albums implements Serializable {
     @OneToMany(mappedBy = "albumId")
     private Collection<FavouriteAlbums> favouriteAlbumsCollection; //done
 
-
-
-
+    public Albums(String title, String image, Boolean isReleased, Date releaseDate, Boolean isDeleted, Date createdAt, Date modifiedAt, Artists artistId) {
+        this.title = title;
+        this.image = image;
+        this.isReleased = isReleased;
+        this.releaseDate = releaseDate;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.artistId = artistId;
+    }
 }

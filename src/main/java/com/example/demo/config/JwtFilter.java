@@ -27,10 +27,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
-        
+
+        String authHeader = request.getHeader("Authorization");
+
         // Log cho 2 endpoint cụ thể
 //        String requestURI = request.getRequestURI();
 //        if (requestURI.equals("/api/public/songs/mostListened") || requestURI.equals("/api/public/users")) {
