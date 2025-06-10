@@ -6,13 +6,11 @@ import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.auth_response.AlbumDisplayForAdmin;
 import com.example.demo.entities.Albums;
 import com.example.demo.entities.Artists;
+import com.example.demo.entities.CategoryAlbum;
 import com.example.demo.entities.FavouriteAlbums;
 import com.example.demo.ex.NotFoundException;
 import com.example.demo.ex.ValidationException;
-import com.example.demo.repositories.AlbumRepository;
-import com.example.demo.repositories.ArtistRepository;
-import com.example.demo.repositories.CategoryRepository;
-import com.example.demo.repositories.FavouriteAlbumRepository;
+import com.example.demo.repositories.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +37,9 @@ public class AlbumService {
 
     @Autowired
     private CategoryAlbumService categoryAlbumService;
+
+    @Autowired
+    private CategoryAlbumRepository categoryAlbumRepository;
 
     public int getNumberOfAlbum() {
         return albumRepository.getNumberOfAllNotDeleted(false);
@@ -176,5 +177,31 @@ public class AlbumService {
                 .stream()
                 .map(this::toAlbumDisplayForAdmin)
                 .collect(Collectors.toList());
+    }
+
+    public List<AlbumDisplayForAdmin> getAllAlbumsBySubjectIdForAdmin(int cateId, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return categoryAlbumRepository.findAllByCategoryIdPaging(cateId, false, pageable)
+                .stream()
+                .map(this::toAlbumDisplayForAdmin)
+                .collect(Collectors.toList());
+    }
+    // để sử dụng được service trên cần có method dưới đây
+    public AlbumDisplayForAdmin toAlbumDisplayForAdmin(CategoryAlbum categoryAlbum) {
+        int albumId = categoryAlbum.getAlbumId().getId();
+        Albums album = albumRepository.findByIdAndIsDeleted(albumId, false).get();
+
+        AlbumDisplayForAdmin res = new AlbumDisplayForAdmin();
+        res.setTitle(album.getTitle());
+        res.setImage(album.getImage());
+        res.setReleaseDate(album.getReleaseDate());
+        res.setIsDeleted(album.getIsDeleted());
+        res.setIsReleased(album.getIsReleased());
+        res.setArtistName(album.getArtistId().getArtistName());
+        res.setArtistImage(album.getArtistId().getImage());
+        res.setId(albumId);
+        res.setCreatedAt(album.getCreatedAt());
+        res.setModifiedAt(album.getModifiedAt());
+        return res;
     }
 }

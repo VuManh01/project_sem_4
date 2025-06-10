@@ -105,4 +105,11 @@ public class AlbumController {
             (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
         return new ResponseEntity<>(albumService.getAllAlbumsByArtistIdForAdmin(id, page), HttpStatus.OK);
     }
+
+    @GetMapping("/admin/albums/byCategory/display/{id}")
+    public ResponseEntity<List<AlbumDisplayForAdmin>> findAllAlbumsBySubjectIdForDisplay
+            (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        List<AlbumDisplayForAdmin> album = albumService.getAllAlbumsBySubjectIdForAdmin(id, page);
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
 }

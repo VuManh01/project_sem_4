@@ -44,4 +44,13 @@ public class Categories implements Serializable {
 
     @OneToMany(mappedBy = "categoryId")
     private Collection<CategoryAlbum> categoryAlbumCollection; //done
+
+
+    public Categories(String title, String description, Boolean isDeleted, Date createdAt, Date modifiedAt) {
+        this.title = title;
+        this.description = description;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }
