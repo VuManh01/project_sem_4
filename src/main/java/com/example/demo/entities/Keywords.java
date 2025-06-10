@@ -35,4 +35,11 @@ public class Keywords implements Serializable {
     @Column(name = "modified_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
+
+    public Keywords(String content, Boolean isActive, Date createdAt, Date modifiedAt) {
+        this.content = content;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }

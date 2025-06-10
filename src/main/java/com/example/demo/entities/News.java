@@ -43,4 +43,12 @@ public class News implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
 
+    public News(String title, String image, String content, Boolean isActive, Date createdAt, Date modifiedAt) {
+        this.title = title;
+        this.image = image;
+        this.content = content;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }
