@@ -13,6 +13,9 @@ import java.util.Optional;
 @Repository
 public interface AlbumRepository extends JpaRepository<Albums, Integer> {
 
+    @Query("Select a from Albums a where a.isDeleted = :isDeleted")
+    List<Albums> findAllNotDeleted(boolean isDeleted);
+
     Optional<Albums> findByIdAndIsDeleted(Integer id, boolean isDeleted);
 
     @Query("Select COUNT(a) from Albums a where a.isDeleted = :isDeleted")

@@ -23,7 +23,7 @@ public interface ArtistRepository extends JpaRepository<Artists, Integer> {
 
     Optional<Artists> findByArtistName(String artistName);
 
-    @Query("SELECT a FROM Artists a WHERE a.usersId.id = :userId AND a.isDeleted = :isDeleted")
+    @Query("SELECT a FROM Artists a WHERE a.userId.id = :userId AND a.isDeleted = :isDeleted")
     Optional<Artists> findByUserId(@Param("userId") Integer userId, @Param("isDeleted") boolean isDeleted);
 
 }

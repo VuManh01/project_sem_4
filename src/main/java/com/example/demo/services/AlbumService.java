@@ -4,6 +4,7 @@ import com.example.demo.dto.request.NewOrUpdateAlbum;
 import com.example.demo.dto.request.NewOrUpdateCategoryAlbum;
 import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.auth_response.AlbumDisplayForAdmin;
+import com.example.demo.dto.response.common_response.AlbumResponse;
 import com.example.demo.entities.Albums;
 import com.example.demo.entities.Artists;
 import com.example.demo.entities.CategoryAlbum;
@@ -40,6 +41,25 @@ public class AlbumService {
 
     @Autowired
     private CategoryAlbumRepository categoryAlbumRepository;
+
+    public List<AlbumResponse> getAllAlbums() {
+        return albumRepository.findAllNotDeleted(false)
+                .stream()
+                .map(this::toAlbumResponse)
+                .collect(Collectors.toList());
+    }
+    public AlbumResponse toAlbumResponse(Albums album) {
+        AlbumResponse res = new AlbumResponse();
+        BeanUtils.copyProperties(album, res);
+        res.setIsDeleted(album.getIsDeleted());
+        res.setIsReleased(album.getIsReleased());
+        res.setArtistId(album.getArtistId().getId());
+        res.setCategoryIds(categoryAlbumRepository.findAllByAlbumId(album.getId(), false)
+                .stream()
+                .map(CategoryAlbum::getId)
+                .toList());
+        return res;
+    }
 
     public int getNumberOfAlbum() {
         return albumRepository.getNumberOfAllNotDeleted(false);

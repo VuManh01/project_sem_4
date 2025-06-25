@@ -51,9 +51,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/artist/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARTIST")
-                        .requestMatchers("/api/public/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")
+//                        .requestMatchers("/api/public/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")
                         .requestMatchers("/api/files/**").permitAll()
-//                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")
+                        .requestMatchers("/api/public/**").permitAll()
+//                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ARTIST")9
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)

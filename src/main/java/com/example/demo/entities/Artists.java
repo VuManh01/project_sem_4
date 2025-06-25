@@ -46,7 +46,7 @@ public class Artists implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users usersId; //done
+    private Users userId; //done
 
     @OneToMany(mappedBy = "artistId")
     private Collection<Songs> songsCollection; //done

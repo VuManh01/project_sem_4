@@ -79,6 +79,27 @@ public class FileController {
 
     }
 
+    //api: download audio lên fronend
+    @GetMapping("/download/audio/{filename}")
+    public ResponseEntity<?> downloadAudioFile(@PathVariable("filename") String filename) throws IOException {
+        String filePath = FOLDER + "audio/" + filename;
+
+        File file = new File(filePath);
+
+        // Kiểm tra xem file có tồn tại không
+        if (!file.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found.");
+        }
+
+        // Đọc nội dung file
+        byte[] fileContent = Files.readAllBytes(file.toPath());
+
+        // Trả về file với đúng Content-Type và tên file trong header
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("audio/mpeg"))  // Content-Type cho file ảnh JPEG
+                .body(fileContent);
+    }
+
     @PostMapping("/upload/lrc")
     public ResponseEntity<String> uploadLRCFile(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(fileService.uploadLRCFile(file));

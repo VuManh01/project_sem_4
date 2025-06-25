@@ -4,6 +4,7 @@ import com.example.demo.dto.request.NewOrUpdateSong;
 import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.SongResponse;
 import com.example.demo.dto.response.display_for_admin.SongDisplayForAdmin;
+import com.example.demo.dto.response.display_response.SongDisplay;
 import com.example.demo.dto.response.mix_response.SongWithViewInMonth;
 import com.example.demo.services.SongService;
 import jakarta.validation.Valid;
@@ -175,5 +176,11 @@ public class SongController {
     public ResponseEntity<List<SongDisplayForAdmin>> findAllSongsByArtistIdForDisplayForAdmin
             (@PathVariable("id") int id, @RequestParam(value = "page", defaultValue = "0") int page) {
         return new ResponseEntity<>(songService.getAllSongsByArtistIdForAdmin(id, page), HttpStatus.OK);
+    }
+
+    /// client
+    @GetMapping("/public/songs/byAlbum/display/{id}")
+    public ResponseEntity<List<SongDisplay>> findAllSongsByAlbumIdForDisplay(@PathVariable("id") int id) {
+        return new ResponseEntity<>(songService.getAllSongsByAlbumIdForDisplay(id), HttpStatus.OK);
     }
 }

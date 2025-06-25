@@ -1,4 +1,4 @@
-package com.example.demo.dto.response.common_response;
+package com.example.demo.dto.response.display_response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,22 +13,21 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SongResponse implements Serializable {
+
+public class SongDisplay implements Serializable {
+
 
     private Integer id;
     private String title;
     private String audioPath;
-    private Integer listenAmount;
-    private String image;
-    private String featureArtist;
     private String lyricFilePath;
+    private String featureArtist;
     private Boolean isPending;
     private Boolean isDeleted;
     private Date createdAt;
     private Date modifiedAt;
-    private Integer albumId;
-    private Integer artistId;
-    private List<Integer> genreIds;
-    private String artistName;// <-- thêm dòng này
-    private String albumImage; // <-- thêm dòng này
+    private String albumTitle;
+    private String albumImage;
+    private String artistName;
+    private List<String> genreNames;
 }

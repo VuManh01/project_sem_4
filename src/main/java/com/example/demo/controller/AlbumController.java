@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.request.NewOrUpdateAlbum;
 import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.auth_response.AlbumDisplayForAdmin;
+import com.example.demo.dto.response.common_response.AlbumResponse;
 import com.example.demo.ex.ValidationException;
 import com.example.demo.services.AlbumService;
 import jakarta.validation.Valid;
@@ -21,7 +22,10 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-
+    @GetMapping("/public/albums")
+    public ResponseEntity<List<AlbumResponse>> findAll() {
+        return new ResponseEntity<>(albumService.getAllAlbums(), HttpStatus.OK);
+    }
     @GetMapping("/admin/albums/count")
     public ResponseEntity<Object> getQuantity() {
         return new ResponseEntity<>(Map.of("qty", albumService.getNumberOfAlbum()), HttpStatus.OK);

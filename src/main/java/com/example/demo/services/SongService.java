@@ -5,6 +5,7 @@ import com.example.demo.dto.request.NewOrUpdateSong;
 import com.example.demo.dto.request.UpdateFileModel;
 import com.example.demo.dto.response.common_response.SongResponse;
 import com.example.demo.dto.response.display_for_admin.SongDisplayForAdmin;
+import com.example.demo.dto.response.display_response.SongDisplay;
 import com.example.demo.dto.response.mix_response.SongWithViewInMonth;
 import com.example.demo.entities.*;
 import com.example.demo.ex.NotFoundException;
@@ -66,8 +67,12 @@ public class SongService {
         res.setIsPending(song.getIsPending());
         if(song.getAlbumId() != null){
             res.setAlbumId(song.getAlbumId().getId());
+            res.setAlbumImage(song.getAlbumId().getImage());
+        } else {
+            res.setAlbumImage(null); // hoặc chuỗi mặc định
         }
         res.setArtistId(song.getArtistId().getId());
+        res.setArtistName(song.getArtistId().getArtistName()); // <-- thêm dòng này
         List<Integer> genreIds = genreSongRepository.findBySongId(song.getId(), false)
                 .stream()
                 .map(it -> it.getGenreId().getId())
@@ -382,6 +387,30 @@ public class SongService {
                 .stream()
                 .map(this::toSongDisplayAdmin)
                 .collect(Collectors.toList());
+    }
+
+    public List<SongDisplay> getAllSongsByAlbumIdForDisplay(int albumId) {
+        return songRepository.findAllByAlbumId(albumId, false, true)
+                .stream()
+                .map(this::toSongDisplay)
+                .collect(Collectors.toList());
+    }
+    public SongDisplay toSongDisplay(Songs song) {
+        SongDisplay res = new SongDisplay();
+        BeanUtils.copyProperties(song, res);
+        res.setIsDeleted(song.getIsDeleted());
+        res.setIsPending(song.getIsPending());
+        if (song.getAlbumId() != null) {
+            res.setAlbumTitle(song.getAlbumId().getTitle());
+            res.setAlbumImage(song.getAlbumId().getImage());
+        }
+        res.setArtistName(song.getArtistId().getArtistName());
+        List<String> genreNames = genreSongRepository.findBySongId(song.getId(), false)
+                .stream()
+                .map(it -> it.getGenreId().getTitle())
+                .toList();
+        res.setGenreNames(genreNames);
+        return res;
     }
 
 

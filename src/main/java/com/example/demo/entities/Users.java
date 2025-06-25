@@ -72,7 +72,7 @@ import java.util.Date;
     @OneToMany(mappedBy = "userId") //done
     private Collection<Playlists> playlistsCollection;
 
-    @OneToMany(mappedBy = "usersId") //done
+    @OneToMany(mappedBy = "userId") //done
     private Collection<Artists> artistsCollection;
 
     @OneToMany(mappedBy = "userId") //done

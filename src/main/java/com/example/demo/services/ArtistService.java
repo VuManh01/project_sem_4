@@ -53,9 +53,9 @@ public class ArtistService {
         int totalListenAmount = artist.getSongsCollection()
                 .stream().mapToInt(Songs::getListenAmount).sum();
         res.setTotalListenAmount(totalListenAmount);
-        Users user = artist.getUsersId();
+        Users user = artist.getUserId();
         if (user != null) {
-            res.setUsername(artist.getUsersId().getUsername());
+            res.setUsername(artist.getUserId().getUsername());
             res.setIsActive(true);
             return res;
         }
@@ -162,7 +162,7 @@ public class ArtistService {
                 if (foundArtistWithUID.isPresent()) {
                     errors.add(Map.of("accountAssignedError", "This artist account already has an owner"));
                 } else {
-                    artist.setUsersId(foundUser);
+                    artist.setUserId(foundUser);
                 }
             }
         }
